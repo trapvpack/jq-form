@@ -3,34 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="node_modules/jqwidgets-framework/jqwidgets/styles/jqx.base.css" type="text/css"/>
-    <link rel="stylesheet" href="node_modules/jqwidgets-framework/jqwidgets/styles/jqx.arctic.css" type="text/css"/>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/scripts/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/scripts/demos.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxcore.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxinput.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxnumberinput.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxdropdownlist.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxlistbox.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxscrollbar.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxbuttons.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxcheckbox.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxdatetimeinput.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxcalendar.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxtooltip.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxtextarea.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxtabs.js"></script>
-    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/globalization/globalize.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2FX5PV9DNT"></script>
-    <script>window.dataLayer = window.dataLayer || [];
-
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-
-    gtag('js', new Date());
-    gtag('config', 'G-2FX5PV9DNT');
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqwidgets/18.0.0/jqwidgets/styles/jqx.base.css"
+          integrity="sha512-jwVR/gpHhH3WQh3hMc/vSn5138lWUpviCfD+QVnKH0F8Nrg2XGm3fTmJpw8l8CFDEB8VLTGzJRMZHlpqGx6Z2Q=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqwidgets/19.2.0/jqwidgets/jqx-all.js"
+            integrity="sha512-EwrKY03BQ6H2WKeSl1hAWWLEtk3pZfqZcsI5AGieO/SO25mrmyc+89gyo+RUuR6FwMnMS6kYMT2v3lplC4VfNQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqwidgets/19.2.0/jqwidgets/globalization/globalize.min.js"
+            integrity="sha512-taS44QOh+izSCMMgz5ZCzfSNeWM9+DkX0w/X0hao8dZFyb7K6s0huRNTnoHbmsh3NHM8RIohZwu8V2+UktRC3w=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
         const Obj = {
             "nodeId": 4000021,
@@ -71,6 +52,12 @@
             $('#' + formId).find(':input').each(function () {
                 if (Obj.hasOwnProperty(this.name)) {
                     objFromForm[this.name] = $(this).val() === '' ? null : $(this).val();
+                    if (this.name === 'dateFrom' || this.name === 'dateTo') {
+                        dateFromForm = $('#' + this.name).jqxDateTimeInput('getDate') === '' ? null : $('#' + this.name).jqxDateTimeInput('getDate');
+                        if ($('#' + this.name).jqxDateTimeInput('getDate') !== null) {
+                            objFromForm[this.name] = dateFromForm.toLocaleDateString('ru-RU');
+                        }
+                    }
                     if ($(this).val() === 'Открыт') {
                         objFromForm[this.name] = 0;
                     }
@@ -131,7 +118,8 @@
             $('#dateFrom, #dateTo').jqxDateTimeInput({
                 theme: 'arctic',
                 width: '100%',
-                disabled: 'true'
+                disabled: 'true',
+                formatString: 'dd.MM.yyyy'
             });
         }
 
@@ -147,8 +135,8 @@
             $('#docsFact').val(Obj.docsFact);
             $('#comment').val(Obj.comment || '');
             $('#group').val(Obj.storageType);
-            $('#dateFrom').jqxDateTimeInput('val', Obj.dateFrom ? Obj.dateFrom.replaceAll('.', '/') : null);
-            $('#dateTo').jqxDateTimeInput('val', Obj.dateTo ? Obj.dateTo.replaceAll('.', '/') : null);
+            $('#dateFrom').jqxDateTimeInput('val', Obj.dateFrom ? Obj.dateFrom : null);
+            $('#dateTo').jqxDateTimeInput('val', Obj.dateTo ? Obj : null);
             $('#volumeClosed').val(parseInt(Obj.volumeClosed) === 0 ? "Открыт" : "Закрыт");
             $('#volumeClosedChecker').jqxCheckBox(parseInt(Obj.volumeClosed) === 0 ? 'uncheck' : 'check');
         }
@@ -192,6 +180,7 @@
                     $('#locatorType').jqxDropDownList({
                         disabled: false
                     });
+                    $('#docsPlan').val(null);
                     $('#locatorType').jqxDropDownList('clearSelection');
                     $('#locatorType').jqxDropDownList('disableItem', 'ЭЛЕКТРОННАЯ ПОЛКА');
                 }
@@ -219,9 +208,16 @@
                     $('#storageType').jqxDropDownList({
                         disabled: false
                     });
-                    $('#locatorType').jqxDropDownList({
-                        disabled: false
-                    })
+                    if ($('#locatorType').jqxDropDownList('getSelectedItem').label === 'ЭЛЕКТРОННАЯ ПОЛКА') {
+                        $('#locatorType').jqxDropDownList({
+                            disabled: true
+                        })
+                    } else {
+                        $('#locatorType').jqxDropDownList({
+                            disabled: false
+                        })
+                    }
+
                 }
             });
         });
@@ -301,19 +297,19 @@
             <div id="row-4">
                 <div class="input-wrapper">
                     <label for="docsPlan">Количество документов план:</label>
-                    <input type="number" id="docsPlan" name="sheetsPlan">
+                    <input type="number" id="docsPlan" name="docsPlan">
                 </div>
                 <div class="input-wrapper">
                     <label for="docsFact">Количество документов факт:</label>
-                    <input type="number" id="docsFact" name="sheetsFact">
+                    <input type="number" id="docsFact" name="docsFact">
                 </div>
                 <div class="input-wrapper">
                     <label for="sheetsPlan">Количество листов план:</label>
-                    <input type="number" id="sheetsPlan" name="docsPlan">
+                    <input type="number" id="sheetsPlan" name="sheetsPlan">
                 </div>
                 <div class="input-wrapper">
                     <label for="sheetsFact">Количество листов факт:</label>
-                    <input type="number" id="sheetsFact" name="docsFact">
+                    <input type="number" id="sheetsFact" name="sheetsFact">
                 </div>
             </div>
             <div id="row-5" style="padding: 10px">
