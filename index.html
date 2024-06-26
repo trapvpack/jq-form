@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html style="height: 100%" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="node_modules/jqwidgets-framework/jqwidgets/styles/jqx.base.css" type="text/css"/>
+    <link rel="stylesheet" href="node_modules/jqwidgets-framework/jqwidgets/styles/jqx.arctic.css" type="text/css"/>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/scripts/demos.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxinput.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxnumberinput.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxdatetimeinput.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxcalendar.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxtooltip.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxtextarea.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/jqxtabs.js"></script>
+    <script type="text/javascript" src="node_modules/jqwidgets-framework/jqwidgets/globalization/globalize.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2FX5PV9DNT"></script>
+    <script>window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+    gtag('config', 'G-2FX5PV9DNT');
+    </script>
+    <script type="text/javascript">
+        const Obj = {
+            "nodeId": 4000021,
+            "volumeName": "Папка 11",
+            "volumeNum": "11",
+            "year": "2021",
+            "dateFrom": "01.07.2021",
+            "dateTo": null,
+            "volumeClosed": "0",
+            "storageType": "Библиотечный",
+            "locatorType": "Книжная полка 75",
+            "sheetsPlan": "75",
+            "sheetsFact": null,
+            "docsPlan": null,
+            "docsFact": null,
+            "comment": null
+        };
+
+        const storageTypeData = [
+            {text: "Библиотечный", value: "1"},
+            {text: "Электронный", value: "2"},
+        ];
+
+        const locatorTypeData = [
+            {text: "Книжный шкаф 400", value: "1", quantity: "400"},
+            {text: "Книжный шкаф 350", value: "2", quantity: "350"},
+            {text: "ЭЛЕКТРОННАЯ ПОЛКА", value: "3", quantity: "25"},
+            {text: "Книжная полка 75", value: "4", quantity: "75"},
+            {text: "Книжная полка 50", value: "5", quantity: "50"},
+            {text: "Книжная полка 150", value: "6", quantity: "150"}
+        ];
+
+        const storageTypeArray = storageTypeData.map(item => item.text);
+        const locatorTypeArray = locatorTypeData.map(item => item.text);
+
+        function newObj(formId) {
+            let objFromForm = {};
+            $('#' + formId).find(':input').each(function () {
+                if (Obj.hasOwnProperty(this.name)) {
+                    objFromForm[this.name] = $(this).val() === '' ? null : $(this).val();
+                    if ($(this).val() === 'Открыт') {
+                        objFromForm[this.name] = 0;
+                    }
+                    if ($(this).val() === 'Закрыт') {
+                        objFromForm[this.name] = 1;
+                    }
+                }
+            });
+            return {
+                "nodeId": Obj.nodeId,
+                ...objFromForm
+            };
+        }
+
+        function initJQWidgets() {
+            $('#tabs').jqxTabs({
+                theme: 'arctic',
+                width: '50%',
+                height: '65%'
+            });
+
+            $("#storageType, #locatorType").jqxDropDownList({
+                theme: 'arctic',
+                width: '100%',
+                height: 30
+            });
+
+            $("#storageType").jqxDropDownList({
+                source: storageTypeArray
+            });
+
+            $("#locatorType").jqxDropDownList({
+                source: locatorTypeArray
+            });
+
+            $("#comment").jqxTextArea({
+                theme: 'arctic',
+                width: '100%',
+                height: 150
+            });
+
+            $('#update, #reset').jqxButton({
+                theme: 'arctic'
+            });
+
+            $('#volumeName, #volumeNum, #year, #volumeClosed, #group, #sheetsPlan, #sheetsFact, #docsPlan, #docsFact').jqxInput({
+                disabled: 'true',
+                theme: 'arctic',
+                height: '30px',
+                width: '100%'
+            });
+
+            $('#volumeClosedChecker').jqxCheckBox({
+                boxSize: 14,
+                theme: 'arctic'
+            });
+
+            $('#dateFrom, #dateTo').jqxDateTimeInput({
+                theme: 'arctic',
+                width: '100%',
+                disabled: 'true'
+            });
+        }
+
+        function uploadForm() {
+            $('#volumeName').val(Obj.volumeName);
+            $('#volumeNum').val(Obj.volumeNum);
+            $('#year').val(Obj.year);
+            $('#storageType').val(Obj.storageType);
+            $('#locatorType').val(Obj.locatorType);
+            $('#sheetsPlan').val(Obj.sheetsPlan);
+            $('#sheetsFact').val(Obj.sheetsFact);
+            $('#docsPlan').val(Obj.docsPlan);
+            $('#docsFact').val(Obj.docsFact);
+            $('#comment').val(Obj.comment || '');
+            $('#group').val(Obj.storageType);
+            $('#dateFrom').jqxDateTimeInput('val', Obj.dateFrom ? Obj.dateFrom.replaceAll('.', '/') : null);
+            $('#dateTo').jqxDateTimeInput('val', Obj.dateTo ? Obj.dateTo.replaceAll('.', '/') : null);
+            $('#volumeClosed').val(parseInt(Obj.volumeClosed) === 0 ? "Открыт" : "Закрыт");
+            $('#volumeClosedChecker').jqxCheckBox(parseInt(Obj.volumeClosed) === 0 ? 'uncheck' : 'check');
+        }
+
+        $(document).ready(function () {
+            initJQWidgets();
+            uploadForm();
+
+            $('#form').submit(function (e) {
+                e.preventDefault();
+            })
+
+            $('#reset').on('click', function () {
+                uploadForm();
+            });
+
+            $('#update').on('click', function () {
+                console.log(newObj('form'));
+            });
+
+            if ($('#storageType').val('Библиотечный')) {
+                $('#locatorType').jqxDropDownList('disableItem', 'ЭЛЕКТРОННАЯ ПОЛКА');
+            }
+
+            $('#storageType').change(function () {
+                $('#group').val($('#storageType').jqxDropDownList('getSelectedItem').value);
+
+                if ($(this).val() === 'Электронный') {
+                    $('#locatorType').jqxDropDownList('enableItem', 'ЭЛЕКТРОННАЯ ПОЛКА');
+                    $('#locatorType').val('ЭЛЕКТРОННАЯ ПОЛКА');
+                    $('#locatorType').jqxDropDownList({
+                        disabled: true
+                    })
+                    let electronicType = locatorTypeData.find(item => item.text === 'ЭЛЕКТРОННАЯ ПОЛКА');
+                    if (electronicType) {
+                        $('#docsPlan').val(parseInt(electronicType.quantity));
+                        $('#sheetsPlan').val(null);
+                        $('#sheetsFact').val(null);
+                    }
+                } else {
+                    $('#locatorType').jqxDropDownList({
+                        disabled: false
+                    });
+                    $('#locatorType').jqxDropDownList('clearSelection');
+                    $('#locatorType').jqxDropDownList('disableItem', 'ЭЛЕКТРОННАЯ ПОЛКА');
+                }
+
+            });
+
+            $('#locatorType').change(function () {
+                let someType = locatorTypeData.find(item => item.text === $(this).val(':selected'));
+                $('#sheetsPlan').val(parseInt(someType.quantity));
+            })
+
+            $('#volumeClosedChecker').change(function () {
+                if ($(this).val(':checked')) {
+                    $('#volumeClosed').val('Закрыт');
+                    $('#dateTo').jqxDateTimeInput('val', new Date());
+                    $('#storageType').jqxDropDownList({
+                        disabled: true
+                    });
+                    $('#locatorType').jqxDropDownList({
+                        disabled: true
+                    });
+                } else {
+                    $('#dateTo').val(null);
+                    $('#volumeClosed').val('Открыт');
+                    $('#storageType').jqxDropDownList({
+                        disabled: false
+                    });
+                    $('#locatorType').jqxDropDownList({
+                        disabled: false
+                    })
+                }
+            });
+        });
+
+    </script>
+    <style type="text/css">
+        .input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            flex-direction: column;
+            margin: 5px
+        }
+
+        #row-2, #row-3, #row-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 10px
+        }
+    </style>
+    <title></title>
+</head>
+<body style="height: 100%; display: flex; align-items: center; justify-content: center">
+<div id='tabs' style="min-width: 600px">
+    <ul style='margin-left: 20px;'>
+        <li>Атрибуты</li>
+    </ul>
+    <div style="height: 100%">
+        <form method="post" id="form" action="#"
+              style="display: grid; grid-template-rows: repeat(4,1fr) 2fr 1fr; height: 100%">
+            <div id="row-1" style="display: grid; grid-template-columns: 2fr 1fr 1fr; padding: 10px">
+                <div class="input-wrapper">
+                    <label for="volumeName">Наименование:</label>
+                    <input type="text" id="volumeName" name="volumeName">
+                </div>
+                <div class="input-wrapper">
+                    <label for="volumeNum">Номер:</label>
+                    <input type="number" id="volumeNum" name="volumeNum">
+                </div>
+                <div class="input-wrapper">
+                    <label for="year">Год:</label>
+                    <input type="number" id="year" name="year">
+                </div>
+            </div>
+            <div id="row-2">
+                <div class="input-wrapper">
+                    <label for="dateFrom">Дата с:</label>
+                    <input type="date" id="dateFrom" name="dateFrom">
+                </div>
+                <div class="input-wrapper">
+                    <label for="dateTo">Дата по:</label>
+                    <input type="date" id="dateTo" name="dateTo">
+                </div>
+                <div class="input-wrapper">
+                    <label for="volumeClosed">Состояние:</label>
+                    <input type="text" id="volumeClosed" name="volumeClosed">
+                </div>
+                <div class="input-wrapper" style="flex-direction: row; align-items: center; justify-content: start">
+                    <input type="checkbox" id="volumeClosedChecker" name="volumeClosedChecker">
+                    <label for="volumeClosedChecker">Объект закрыт</label>
+                </div>
+            </div>
+            <div id="row-3">
+                <div class="input-wrapper">
+                    <label for="storageType">Тип хранения:</label>
+                    <div id="storageType" name="storageType"></div>
+                </div>
+                <div class="input-wrapper">
+                    <label for="locatorType">Формат хранения:</label>
+                    <div id="locatorType" name="locatorType"></div>
+                </div>
+                <div class="input-wrapper">
+                    <label for="group">Группа:</label>
+                    <input type="text" id="group" name="group">
+                </div>
+            </div>
+            <div id="row-4">
+                <div class="input-wrapper">
+                    <label for="docsPlan">Количество документов план:</label>
+                    <input type="number" id="docsPlan" name="sheetsPlan">
+                </div>
+                <div class="input-wrapper">
+                    <label for="docsFact">Количество документов факт:</label>
+                    <input type="number" id="docsFact" name="sheetsFact">
+                </div>
+                <div class="input-wrapper">
+                    <label for="sheetsPlan">Количество листов план:</label>
+                    <input type="number" id="sheetsPlan" name="docsPlan">
+                </div>
+                <div class="input-wrapper">
+                    <label for="sheetsFact">Количество листов факт:</label>
+                    <input type="number" id="sheetsFact" name="docsFact">
+                </div>
+            </div>
+            <div id="row-5" style="padding: 10px">
+                <div class="input-wrapper">
+                    <label for="comment">Комментарий:</label>
+                    <textarea id="comment" cols="" rows="" name="comment"></textarea>
+                </div>
+            </div>
+            <div id="row-6" style="display: flex; padding: 12px; align-items: end; justify-content: flex-end">
+                <div>
+                    <button type="submit" id='update'>Обновить</button>
+                    <button type="button" id='reset'>Отменить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
